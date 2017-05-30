@@ -1,9 +1,9 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-sm-12 text-center">
-      <p>Auf dieser Seite könnt ihr Fehler in Protokollen melden.</p>
-      <p>Gebt dazu einfach den Barcode und eure Beschwerde in die Form unten ein.</p>
-      <p>Den Barcode findet ihr in der oberen rechten Ecke des Protokolls.</p>
+      <p>Auf dieser Seite könnt ihr Fehler in Protokollen melden.<br/>
+      Gebt dazu einfach den Barcode und eure Beschwerde in das Formular ein.<br/>
+      Den Barcode findet ihr in der oberen rechten Ecke des Protokolls.</p>
       <hr>
     </div>
   </div>
@@ -11,7 +11,7 @@
     <div class="col-sm-12">
       <form data-bind="submit: reportDocument" class="form-horizontal">
         <div class="form-group">
-          <label for="docid" class="col-sm-2 control-label">Barcode / ID</label>
+          <label for="docid" class="col-sm-2 control-label">Barcode</label>
           <div class="col-sm-10">
             <input required="required" type="number" class="form-control" id="docid" placeholder="123"
                    data-bind="value: id_or_barcode">
@@ -26,14 +26,16 @@
         </div>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-primary" data-bind="enable: submissionEnabled">Melden</button>
-            <div class="form-control-inline icon-placeholder">
-              <div class="icon text-right" data-bind="css: { 'spinner icon-spinner active': status === 'waiting',
-                    'icon-ok text-success': status === 'success',
-                    'icon-attention text-warning': status === 'error' || status === '404' }">
-              </div>
-            </div>
-            <span class="text-warning" data-bind="visible: status === '404'">Zu dem Barcode wurde kein Protokoll gefunden</span>
+            <button type="submit" class="btn btn-primary" data-bind="enable: submissionEnabled">
+              Melden
+              <span data-bind="css: { 'spinner icon-spinner active': status === 'waiting',
+                'icon-ok': status === 'success',
+                'icon-attention': status === 'error' || status === '404' || status === '400' }"></span>
+            </button>
+            <span class="text-warning" data-bind="visible: status === 'error'">Es ist ein unbekannter Fehler aufgetreten. Komm direkt bei uns vorbei oder schreibe an</span>
+            <a data-bind="visible: status === 'error'" href="mailto:odie@fsmi.uni-karlsruhe.de">odie@fsmi.uni-karlsruhe.de</a>
+            <span class="text-warning" data-bind="visible: status === '400'">Bitte gib eine Beschwerde ein.</span>
+            <span class="text-warning" data-bind="visible: status === '404'">Zu dem Barcode wurde kein Protokoll gefunden.</span>
             <span class="text-success" data-bind="visible: status === 'success'">Danke für dein Feedback!</span>
           </div>
         </div>
