@@ -48,6 +48,8 @@
               </li>
               <li data-bind="visible: !user.isAuthenticated, css: { active: activeRoute === 'documentsubmission' }"><a href="#documentsubmission">Protokoll einreichen</a>
               </li>
+              <li data-bind="visible: !user.isAuthenticated, css: { active: activeRoute === 'documentreporting' }"><a href="#documentreporting">Protokollfehler melden</a>
+              </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li data-bind="visible: user.isAuthenticated, css: { active: activeRoute === 'documentsubmission' }"><a href="#documentsubmission">Dokument erstellen</a>
