@@ -72,6 +72,10 @@ $(window.document).ready(() => {
     viewModel: require('./vm/documentsubmission'),
     template: fs.readFileSync('views/documentsubmission.html', 'utf8'),
   });
+  ko.components.register('documentreporting', {
+    viewModel: require('./vm/documentreporting'),
+    template: fs.readFileSync('views/documentreporting.html', 'utf8'),
+  });
 
   store.ensureLoaded(() => {
     pager.extendWithPage(app);
