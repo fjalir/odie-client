@@ -15,7 +15,6 @@ export default class DepositReturn {
     this.depositFilter = new SubstringFilter({column: 'name'});
 
     this.locallyValidatedIDs = [];//ko.observableArray();
-    window.locallyValidatedIDs = this.locallyValidatedIDs;
     this.documents = new SelectableCollection({
       endpoint: 'documents',
       filters: [
@@ -43,8 +42,12 @@ export default class DepositReturn {
       let selected = this.documents.selected;
       return selected &&
           (selected.early_document_eligible || selected.deposit_return_eligible) && // be still eligible for smth
-          (this.locallyValidatedIDs.indexOf(selected.id) !== -1); // be (only) locally validated
-    },this);
+          (!selected.validated || this.locallyValidatedIDs.indexOf(selected.id) !== -1); // be only locally validated
+    }, this);
+    this.documentAdminUrl = ko.pureComputed(() => {
+      let selected = this.documents.selected;
+      return selected && `${api.adminUrl}document/edit/?id=${selected.id}`;
+    }, this);
     ko.track(this, ['locallyValidatedIDs']);
   }
 
@@ -56,23 +59,33 @@ export default class DepositReturn {
     }
   }
 
-  cashOutDeposit() {
+  _cashOutDeposit() {
     let data = {
       id: this.deposits.selected.id,
       cash_box: user.officeConfig.cash_boxes[0],
     };
-
+    let price = -this.deposits.selected.price
     if (this.documents.selected)
       data.document_id = this.documents.selected.id;
 
     api.post('log_deposit_return', data).done(() => {
-      log.addItem('Pfandrückgabe', -this.deposits.selected.price);
-      this.documents.load();
-      this.deposits.load();
-    });
+        log.addItem('Pfandrückgabe', price);
+        this.documents.load();
+        this.deposits.load();
+      });
   }
 
-  cashOutEarlyDocument() {
+  cashOutDeposit() {
+    let selected = this.documents.selected;
+    if(selected && selected.validated && this.locallyValidatedIDs.indexOf(selected.id) === -1) {
+      this._cashOutDeposit();
+    } else {
+      $('#validateMetaModal').modal('show');
+      $('#confirmActionButton').off().one('click', this._cashOutDeposit.bind(this));
+    }
+  }
+
+  _cashOutEarlyDocument() {
     let data = {
       id: this.documents.selected.id,
       cash_box: user.officeConfig.cash_boxes[0],
@@ -81,7 +94,17 @@ export default class DepositReturn {
     api.post('log_early_document_reward', data).done((data) => {
       log.addItem('Erstprotokoll', -data.data.disbursal);
       this.documents.load();
-    });
+    });      
+  }
+
+  cashOutEarlyDocument() {
+    let selected = this.documents.selected;
+    if(selected && selected.validated && this.locallyValidatedIDs.indexOf(selected.id) === -1) {
+      this._cashOutEarlyDocument();
+    } else {
+      $('#validateMetaModal').modal('show');
+      $('#confirmActionButton').off().one('click', this._cashOutEarlyDocument.bind(this));
+    }
   }
 
   rejectDocument() {
@@ -90,4 +113,5 @@ export default class DepositReturn {
       this.documents.load();
     });
   }
+
 }

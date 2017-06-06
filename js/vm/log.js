@@ -43,10 +43,10 @@ export class Log {
     return sum(selectedMonetaryLogs.length > 0 ? selectedMonetaryLogs : monetaryLogs, 'amount');
   }
 
-    get returnAmount() {
-        let givenCents = this.givenAmount * 100;
-        return givenCents - this.totalAmount;
-    }
+  get returnAmount() {
+      let givenCents = this.givenAmount * 100;
+      return givenCents - this.totalAmount;
+  }
 
   get formatter() { return formatter; }
 }

@@ -52,6 +52,7 @@ let api = new Api();
 if (window.location.hostname === 'www.fsmi.uni-karlsruhe.de') {
   api.serverOrigin = window.location.origin;
   api.baseUrl = api.serverOrigin + '/odie/api/';
+  api.adminUrl = api.serverOrigin + '/odie/admin/';
 } else {
   Object.assign(api._baseAjaxSettings, {
     crossDomain: true,
@@ -59,13 +60,14 @@ if (window.location.hostname === 'www.fsmi.uni-karlsruhe.de') {
       withCredentials: true,
     },
   });
-  let live = true;
-  if (live) {
+  if (window.location.hostname === 'www-test-stable.fsmi.uni-karlsruhe.de') {
     api.serverOrigin = 'https://www-test-stable.fsmi.uni-karlsruhe.de';
     api.baseUrl = api.serverOrigin + '/odie/api/';
+    api.adminUrl = api.serverOrigin + '/odie/admin/';
   } else {
     api.serverOrigin = 'http://localhost:5000';
     api.baseUrl = api.serverOrigin + '/api/';
+    api.adminUrl = api.serverOrigin + '/admin/';
   }
 }
 

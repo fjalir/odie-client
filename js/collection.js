@@ -152,4 +152,8 @@ export class SelectableCollection extends Collection {
   toggleSelect(value) {
     this.selected = value === this.selected ? null : value;
   }
+
+  select(value) {
+    this.selected = value;
+  }
 }
